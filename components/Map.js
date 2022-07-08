@@ -1,44 +1,66 @@
 import React, {useState, useEffect} from 'react';
 import getCenter from 'geolib/es/getCenter';
 import getBounds from 'geolib/es/getBounds';
-import mapboxgl from '!mapbox-gl'
-mapboxgl.accessToken = process.env.mapbox_key;
+import ReactMapGL, {Marker, Popup} from 'react-map-gl';
 
 function Map({searchResults}) {
 
-  useEffect(() => {
-    const coordinates = searchResults.map(
-      result => ({longitude: result.long,latitude: result.lat})      
-    );
-    const center = getCenter(coordinates);
-    const bounds = getBounds(coordinates);
-    
-    const map = new mapboxgl.Map({
-      container: "map",
-      style: 'mapbox://styles/drakosi/ckvcwq3rwdw4314o3i2ho8tph',
-      center:[center.longitude,center.latitude],
-      zoom: 6,
-      pitch: 0      
-    });
+  const coordinates = searchResults.map(result => ({
+    longitude: result.long,
+    latitude: result.lat
+  }));
 
-    /* Add markers */
-    coordinates.map(item => {    
-      const marker = new mapboxgl.Marker()
-        .setLngLat([item.longitude, item.latitude])
-        .addTo(map);
-    });
+  const center = getCenter(coordinates);
+  const bounds = getBounds(coordinates);
 
-    /* Set map bounds */
-    map.fitBounds([
-      [bounds.minLng, bounds.minLat],
-      [bounds.maxLng, bounds.maxLat] 
-    ],{
-        padding: 80
-    });
+  const [selectedLocation, setSelectedLocation] = useState({});
+  const [viewport, setViewport] = useState({    
+    width:"100%",
+    height:"100%",
+    latitude:center.latitude,
+    longitude:center.longitude,
+    zoom:10
+  });
 
-  },[searchResults]);
-
-  return <div id="map" className='flex-grow'/>;
+  return (
+    <ReactMapGL
+      mapStyle={process.env.map_style}
+      mapboxAccessToken={process.env.map_key}
+      onMove={evt => setViewport(evt.viewport)}
+      fitBounds={bounds}
+      {...viewport}>
+        {
+          searchResults.map(result => (
+            <div key={result.long}>
+              <Marker
+                longitude={result.long}
+                latitude={result.lat}
+                offsetLeft={-20}
+                offsetTop={-10}>
+                <p 
+                  role="img"
+                  onClick={() => setSelectedLocation(result)}
+                  className="cursor-pointer text-2xl animate-bounce"
+                  aria-label="push-pin">
+                  <span role="img" aria-label="sheep">📌</span>
+                </p>
+              </Marker>             
+                
+              {selectedLocation.long === result.long ? (
+                  /* Show popup onclick */
+                  <Popup
+                    onClose={() => setSelectedLocation({})}
+                    closeOnClick={true}
+                    longitude={result.long}
+                    latitude={result.lat}>
+                    {result.title}
+                  </Popup>
+              ) : false } 
+            </div>
+          ))
+        }
+    </ReactMapGL>
+  );
 }
 
 export default Map

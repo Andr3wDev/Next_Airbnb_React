@@ -56,12 +56,12 @@ function Header({placeholder}) {
             <Image alt="logo" objectFit='contain' objectPosition='left'
               src={logoImage} layout='fill' />
         </div>
-        <div className='flex items-center border-2 rounded-full py-2 pl-5'>          
+        <div className='flex items-center border-2 rounded-full py-2 px-1'>          
           <input
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
             placeholder={placeholder || "Start your search"}
-            className='flex-grow outline-none flex' />          
+            className='flex-grow outline-none flex overflow-hidden pl-5 pr-5' />          
           <SearchIcon className='h-8 w-8 bg-red-400 hidden md:inline-flex
            text-white rounded-full p-2 cursor-pointer mx-2' />
         </div>
@@ -70,8 +70,8 @@ function Header({placeholder}) {
           <GlobeAltIcon className='h-6 cursor-pointer'/>
           <div className='flex items-center space-x-2 border-2
             p-2 rounded-full'>
-            <UserCircleIcon className='h-6' />
-            <MenuIcon className='h-6'/>
+            <UserCircleIcon className='h-6 cursor-pointer' />
+            <MenuIcon className='h-6 cursor-pointer'/>
           </div>
         </div>
         {/* Calendar */}

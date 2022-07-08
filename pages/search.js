@@ -5,6 +5,7 @@ import InfoCard from '../components/InfoCard';
 import Map from '../components/Map';
 import { useRouter } from 'next/router';
 import { format } from 'date-fns';
+import data from '../data/search.json';
 
 function Search({ searchResults }) {
 
@@ -66,9 +67,7 @@ export default Search;
 
 /* SSR function e.g context object */
 export async function getServerSideProps() {
-  const searchResults = await fetch('https://links.papareact.com/isz')
-    .then((res) => res.json());
-
+  const searchResults = data;
   return {
     props: {
       searchResults

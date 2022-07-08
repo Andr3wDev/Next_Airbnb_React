@@ -6,6 +6,8 @@ import MediumCard from '../components/MediumCard';
 import LargeCard from '../components/LargeCard';
 import Footer from '../components/Footer';
 import largeCard from '../public/largecard.jpg';
+import explore from '../data/explore.json';
+import cards from '../data/cards.json';
 
 export default function Home({ exploreData, cardsData }) {
   return (
@@ -55,14 +57,9 @@ export default function Home({ exploreData, cardsData }) {
 }
 
 /* SSR */
-export async function getStaticProps(){
-  
-  const exploreData = await fetch('https://links.papareact.com/pyp')
-    .then((res) => res.json());
-
-  const cardsData = await fetch('https://links.papareact.com/zp1')
-    .then((res) => res.json()); 
-
+export async function getStaticProps(){  
+  const exploreData = explore;
+  const cardsData = cards;
   return {
     props: {
       exploreData,
